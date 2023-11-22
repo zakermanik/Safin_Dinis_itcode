@@ -12,7 +12,19 @@
 * */
 
 function fibonacci(num) {
+    if (num == 0) return num // при num == 0 цикл должен пройтись 0 раз, значит можно без него)
 
+    let a = 0;
+    let b = 1;
+    let z = 0;
+    let k = 1;
+    do {
+        z = a + b;
+        a = b;
+        b = z;
+        k += 1;
+    } while (k < num)
+    return z
 }
 
 
