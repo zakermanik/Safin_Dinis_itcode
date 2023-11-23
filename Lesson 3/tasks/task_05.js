@@ -3,7 +3,11 @@
 * */
 
 function abs(array) {
-
+    let sum = 0;
+    array.forEach(a => {
+        sum += a;
+    });
+    return sum/2
 }
 
 
