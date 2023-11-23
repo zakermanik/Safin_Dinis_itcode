@@ -4,7 +4,7 @@
 
 function abs(array) {
     let result = array.reduce((sum, num) => sum + num, 0);
-    return result/2
+    return result/2;
 }
 
 
