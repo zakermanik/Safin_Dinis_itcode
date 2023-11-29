@@ -11,8 +11,17 @@ logOnce = один раз(console.log)
 logOnce("foo") // -> "foo"
 logOnce("bar") // -> нет эффекта
 */
-function once() {
+function once(func) {
+    let isCalled = false;
 
+    return function(...argumentos) {
+        if (!isCalled) {
+            isCalled = true;
+            return func(...argumentos)
+        } else {
+            return undefined
+        }
+    };
 }
 
 module.exports = once
