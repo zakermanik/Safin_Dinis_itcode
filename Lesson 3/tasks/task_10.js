@@ -12,8 +12,11 @@ function print(a,b) {
 Идея состоит в том, чтобы перевернуть любое количество аргументов, используя функцию более высокого порядка, не заботясь о том, какая функция передается в нее.
 * */
 
-function flip() {
-
+function flip(func) {
+   return function(...argumentos) {
+      argumentos.reverse()
+      return func(...argumentos)
+   }
 }
 
 module.exports = flip
