@@ -35,8 +35,124 @@ A component will not appear at all if its value happens to be zero. Hence, 1 min
 *  Формально длительность, указанная в компоненте, не должна превышать любую допустимую более значимую единицу времени.
 *
 * * */
-function formatDuration (seconds) {
-    return ""
+function formattime(seconds) {
+    
+    let str = String;
+
+    let year = Math.floor(seconds / (365 * 3600 * 24));;
+    let day = Math.floor(seconds % (365 * 3600 * 24) / (3600 * 24));
+    let hour = Math.floor(seconds % (3600 * 24) / 3600);
+    let minute = Math.floor(seconds % 3600 / 60);
+    let second = Math.floor(seconds % 60);
+
+    function secondCount(second) {
+        if (second == 1) {
+            return " and " + second + " second"
+        } else if (second != 0) {
+            return " and " + second + " seconds"
+        }
+    }
+    function minuteCount(second, minute) {
+        if (second != 0) {
+            if (minute == 1) {
+                return ", " + minute + " minute"
+            } else if (minute != 0) {
+                return ", " + minute + " minutes"
+            }
+        } else {
+            if (minute == 1) {
+                return " and " + minute + " minute"
+            } else if (minute != 0) {
+                return " and " + minute + " minutes"
+            }
+        }
+    }
+    
+    if (!seconds || seconds == 0) {
+        return "now"
+    }
+
+    if (seconds < 60) {
+        second = seconds;
+        if (second == 1) {
+            str = second + " second"
+        } else {
+            str = second + " seconds"
+        }
+        return str
+    } else if (seconds < 3600) {
+        if (minute == 1) {
+            str = minute + " minute"
+        } else {
+            str = minute + " minutes"
+        }
+
+        if (second != 0) {
+            str = str + secondCount(second)
+        }
+        return str
+    } else if (seconds < 86400) {
+
+
+        if (hour == 1) {
+            str = hour + " hour";
+        } else {
+            str = hour + " hours";
+        }
+
+        if (minute != 0) {
+            str = str + minuteCount(second, minute)
+        }
+        if (second != 0) {
+            str = str + secondCount(second)
+        }
+        return str
+    } else if (seconds < 31536000) {
+
+        if (day == 1) {
+            str = day + " day";
+        } else {
+            str = day + " days";
+        }
+        if (hour != 0) {
+            if (hour == 1) {
+                str = str + ", " + hour + " hour";
+            } else {
+                str = str + ", " + hour + " hours";
+            }
+            str = str + minuteCount(second, minute)
+        } else {
+            str = str + minuteCount(second, minute)
+        }
+        if (second != 0) {
+            str = str + secondCount(second)
+        }
+        return str
+    }
+    // Оптимизированный и компактный способ с использованием массива объектов
+
+
+    // if (seconds === 0) return "now";
+
+    // const timeUnits = [
+    //     { unit: "year", time: 365 * 24 * 60 * 60 },
+    //     { unit: "day", time: 24 * 60 * 60 },
+    //     { unit: "hour", time: 60 * 60 },
+    //     { unit: "minute", time: 60 },
+    //     { unit: "second", time: 1 }
+    // ];
+
+    // const parts = [];
+    
+    // for (const { unit, time } of timeUnits) {
+    //     if (seconds >= time) {
+    //         const count = Math.floor(seconds / time);
+    //         seconds %= time;
+    //         parts.push(`${count} ${unit}${count !== 1 ? 's' : ''}`);
+    //     }
+    // }
+    
+    // return parts.join(', ').replace(/,([^,]*)$/, ' and$1');
 }
 
 
@@ -153,4 +269,4 @@ function formatDuration (seconds) {
 
 
 
-module.exports = formatDuration
+module.exports = formattime
