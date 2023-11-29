@@ -16,8 +16,10 @@ function isGTten(el){
 * должно вернуться [12,20,22]
 * */
 
-function multiFilter() {
-
+function multiFilter(...functions) {
+   return function (el) {
+      return functions.every(filter => filter(el));
+  };
 }
 
 module.exports = multiFilter
