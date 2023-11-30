@@ -1,0 +1,67 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: rgb(222, 223, 255);
+    min-width: 1000px;
+}
+
+.container {
+    margin-top: 50px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.container>div {
+    align-items: center;
+    border-radius: 10px;
+    padding: 36px 24px;
+    background-color: white;
+    width: 900px;
+    color: #252EFF;
+    text-align: center;
+}
+
+.header {}
+
+.menu {}
+
+.game {}
+
+.game-square {
+    display: grid;
+    grid-template-columns: 250px 250px 250px;
+    grid-template-rows: 250px 250px 250px;
+    justify-content: center;
+
+}
+
+.cell {
+    border: 1px solid #6065ff4a;
+    background-color: rgb(222, 223, 255);
+    transition: all .2s ease-in-out;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 200PX;
+    font-size: 300px;
+    font-weight: 200;
+}
+
+.cell:hover {
+    background-color: white;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .2);
+    transform: scale(1.05);
+}
+
+.cell:active {
+    background-color: #252EFF;
+    ;
+}
