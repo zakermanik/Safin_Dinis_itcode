@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,22 +11,39 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <title>Крестики нолики</title>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <h1>Крестики и нолики</h1>
         </div>
         <div class="menu">
-            
+            <h4>Кто будет ходить первым?</h4>
+            <div class="menu__btns">
+                <button id="playerX">X</button>
+                <button id="playerO">O</button>
+                <button id="PvE">Игра против компьютера</button>
+                <button id="PvP">На двоих</button>
+            </div>
+            <button id="reset" onclick="resetGame()">Начать заново</button>
+
+        </div>
+        <div class="game-info">
+            <h4 style="margin: -30px;">
+                <p>Первым ходит: <span id="choosenPlayer"></span></p>
+                <p><span id="winPlayer"></span></p>
+            </h4>
         </div>
         <div class="game">
+            
+            <div class="game-stop"></div>
             <div class="game-square">
-                
+
             </div>
-            <button id="reset" onclick="resetGame()">Сброс</button>
         </div>
         <div class="credit">
             <h3>Сафин Динис</h3>
@@ -33,4 +51,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
