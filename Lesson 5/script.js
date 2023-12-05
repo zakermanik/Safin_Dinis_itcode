@@ -2,189 +2,172 @@
 //     .then(response => response.json())
 //     .then(json => console.log(json))
 let buttons = document.querySelector('.nav__btns')
+let select = document.querySelector('#limitItems')
 let responseList = document.querySelector('.responseList')
-
-buttons.addEventListener('click', item => {
+let data
+let key
+select.addEventListener('change', () => {
+    // console.log(parseInt(select.options[select.selectedIndex].text))
+    main()
+})
+buttons.addEventListener('click', async item => {
     if (item.target.tagName === 'BUTTON') {
-        let key = item.target.innerHTML.toLowerCase()
+        key = item.target.innerHTML.toLowerCase()
         console.log(key)
-        main(key)
+        await fetchData(key)
+        main()
     }
 
 })
 async function fetchData(key) {
     const response = await fetch(`https://jsonplaceholder.typicode.com/${key}`)
-    const data = await response.json();
-    return data
+    data = await response.json();
 }
 
-async function main(key) {
-    const data = await fetchData(key)
-    let limitPages = Math.ceil(Object.keys(data).length / 10);
-    let limitItems = Object.keys(data).length / limitPages;
-    newData = data.slice(0, limitItems)
-    loadPosts(newData)
-    console.log(limitPages, limitItems)
+function preparePage(data, limitItems, page) {
+    page--
+    const start = limitItems * page;
+    const end = start + limitItems;
+    return data.slice(start, end);
 }
 
-async function loadPosts(data) {
-    try {
-        responseList.innerHTML = '';
-        for (let i in data) {
-            console.log(data[i])
-            responseList.innerHTML +=
-                `<li>
+function main() {
+    const currentPage = 1;
+    let limitItems = parseInt(select.options[select.selectedIndex].text);
+    let limitPages = Math.ceil(Object.keys(data).length / limitItems) > 10 ? 10 : Math.ceil(Object.keys(data).length / limitItems);
+
+    const preparedData = preparePage(data, limitItems, currentPage)
+    switch(key) {
+        case 'posts':
+            showPosts(preparedData)
+            break;
+        case 'comments':
+            showComments(preparedData)
+            break;
+        case 'albums':
+            showAlbums(preparedData)
+            break;
+        case 'photos':
+            showPhotos(preparedData)
+            break;
+        case 'todos':
+            showTodos(preparedData)
+            break;
+        case 'users':
+            showUsers(preparedData)
+            break;
+    }
+    // console.log(limitPages, limitItems)
+}
+
+function showPosts(data) {
+    responseList.innerHTML = '';
+    for (let i in data) {
+        console.log(data[i])
+        responseList.innerHTML +=
+        `<li>
+            <div class="post">
+                <div class="post-info">
+                    <div class="post-id"><h4>Post #${data[i].id}. User #${data[i].userId}</h4></div>
+                    <div class="post-title"><h5>Title:</h5><span>${data[i].title}</span></div>
+                    <div class="post-body"><h5>Body:</h5><span>${data[i].body}</span></div>
+                </div>
+            </div>
+        </li>`
+        ;
+    }
+}
+function showComments(data) {
+    responseList.innerHTML = '';
+    for (let i in data) {
+        console.log(data[i])
+        responseList.innerHTML +=
+            `<li>
                 <div class="user">
                     <div class="user-info">
-                        <div class="user-id">ID #${i}</div>
+                        <div class="user-id">ID #${data[i].id}</div>
                         <div class="user-name">Name - ${data[i].name}</div>
                         <div class="user-username">Username - ${data[i].username}</div>
                         <div class="user-email">E-mail - ${data[i].email}</div>
                     </div>
                 </div>
             </li>`
-                ;
-        }
-    }
-    catch (e) {
-        console.error(e)
+            ;
     }
 }
-async function fetchComments() {
-    try {
-        responseList.innerHTML = '';
-
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users`);
-        const data = await response.json();
-
-        for (let i in data) {
-            console.log(data[i])
-            responseList.innerHTML +=
-                `<li>
+function showAlbums(data) {
+    responseList.innerHTML = '';
+    for (let i in data) {
+        console.log(data[i])
+        responseList.innerHTML +=
+            `<li>
                 <div class="user">
                     <div class="user-info">
-                        <div class="user-id">ID #${i}</div>
+                        <div class="user-id">ID #${data[i].id}</div>
                         <div class="user-name">Name - ${data[i].name}</div>
                         <div class="user-username">Username - ${data[i].username}</div>
                         <div class="user-email">E-mail - ${data[i].email}</div>
                     </div>
                 </div>
             </li>`
-                ;
-        }
-    }
-    catch (e) {
-        console.error(e)
+            ;
     }
 }
-async function fetchaAlbums() {
-    try {
-        responseList.innerHTML = '';
-
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users`);
-        const data = await response.json();
-
-        for (let i in data) {
-            console.log(data[i])
-            responseList.innerHTML +=
-                `<li>
+function showPhotos(data) {
+    responseList.innerHTML = '';
+    for (let i in data) {
+        console.log(data[i])
+        responseList.innerHTML +=
+            `<li>
                 <div class="user">
                     <div class="user-info">
-                        <div class="user-id">ID #${i}</div>
+                        <div class="user-id">ID #${data[i].id}</div>
                         <div class="user-name">Name - ${data[i].name}</div>
                         <div class="user-username">Username - ${data[i].username}</div>
                         <div class="user-email">E-mail - ${data[i].email}</div>
                     </div>
                 </div>
             </li>`
-                ;
-        }
-    }
-    catch (e) {
-        console.error(e)
+            ;
     }
 }
-async function fetchPhotos() {
-    try {
-        responseList.innerHTML = '';
-
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users`);
-        const data = await response.json();
-
-        for (let i in data) {
-            console.log(data[i])
-            responseList.innerHTML +=
-                `<li>
+function showTodos(data) {
+    responseList.innerHTML = '';
+    for (let i in data) {
+        console.log(data[i])
+        responseList.innerHTML +=
+            `<li>
                 <div class="user">
                     <div class="user-info">
-                        <div class="user-id">ID #${i}</div>
+                        <div class="user-id">ID #${data[i].id}</div>
                         <div class="user-name">Name - ${data[i].name}</div>
                         <div class="user-username">Username - ${data[i].username}</div>
                         <div class="user-email">E-mail - ${data[i].email}</div>
                     </div>
                 </div>
             </li>`
-                ;
-        }
-    }
-    catch (e) {
-        console.error(e)
+            ;
     }
 }
-async function fetchTodos() {
-    try {
-        responseList.innerHTML = '';
-
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users`);
-        const data = await response.json();
-
-        for (let i in data) {
-            console.log(data[i])
-            responseList.innerHTML +=
-                `<li>
+function showUsers(data) {
+    responseList.innerHTML = '';
+    for (let i in data) {
+        console.log(data[i])
+        responseList.innerHTML +=
+            `<li>
                 <div class="user">
                     <div class="user-info">
-                        <div class="user-id">ID #${i}</div>
+                        <div class="user-id">ID #${data[i].id}</div>
                         <div class="user-name">Name - ${data[i].name}</div>
                         <div class="user-username">Username - ${data[i].username}</div>
                         <div class="user-email">E-mail - ${data[i].email}</div>
                     </div>
                 </div>
             </li>`
-                ;
-        }
-    }
-    catch (e) {
-        console.error(e)
+            ;
     }
 }
-async function fetchUsers() {
-    try {
-        responseList.innerHTML = '';
 
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users`);
-        const data = await response.json();
-
-        for (let i in data) {
-            console.log(data[i])
-            responseList.innerHTML +=
-                `<li>
-                <div class="user">
-                    <div class="user-info">
-                        <div class="user-id">ID #${i}</div>
-                        <div class="user-name">Name - ${data[i].name}</div>
-                        <div class="user-username">Username - ${data[i].username}</div>
-                        <div class="user-email">E-mail - ${data[i].email}</div>
-                    </div>
-                </div>
-            </li>`
-                ;
-        }
-    }
-    catch (e) {
-        console.error(e)
-    }
-}
 
 
 
