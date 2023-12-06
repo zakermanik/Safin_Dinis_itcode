@@ -31,13 +31,19 @@ navButtons.addEventListener('click', async item => {
 })
 // запрос на сервер и получение data
 async function fetchData(key) {
-    loader.style.display = 'block'
-    content.style.display = 'none'
-    pageList.style.display = 'none'
-    const response = await fetch(`https://jsonplaceholder.typicode.com/${key}`)
-    data = await response.json();
-    loader.style.display = 'none'
-    content.style.display = 'block'
+    try {
+        loader.style.display = 'block'
+        content.style.display = 'none'
+        pageList.style.display = 'none'
+        const response = await fetch(`https://jsonplaceholder.typicode.com/${key}`)
+        data = await response.json();
+        loader.style.display = 'none'
+        content.style.display = 'block'
+        
+    } catch(e) {
+        alert(e)
+    }
+    
 }
 // подготовка данных, которые будут отображаться на конкретной странице
 function preparePage(data, key, limitItems, page) {
