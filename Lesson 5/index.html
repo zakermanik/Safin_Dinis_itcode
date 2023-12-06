@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,22 +14,21 @@
 
     <title>Сафин Динис</title>
 </head>
-
 <body>
     <div class="container">
         <header class="header">
             <nav class="nav">
                 <div class="nav__btns">
-                    <button>Posts</button>
-                    <button>Comments</button>
-                    <button>Albums</button>
-                    <button>Photos</button>
-                    <button>Todos</button>
-                    <button>Users</button>
+                    <button class="">Posts</button>
+                    <button class="">Comments</button>
+                    <button class="">Albums</button>
+                    <button class="">Photos</button>
+                    <button class="">Todos</button>
+                    <button class="">Users</button>
                 </div>
             </nav>
         </header>
-        <section class="section">
+        <section class="page-list">
             <div class="menu">
                 <select id="limitItems">
                     <option value="1">5</option>
@@ -38,26 +36,21 @@
                     <option value="3">20</option>
                     <option value="4">40</option>
                 </select>
-                <div class="page__btns">
-                    <button>1</button>
-                    <button>2</button>
-                    <button>3</button>
-                    <button>4</button>
-                    <button>5</button>
-                    <button>6</button>
-                    <button>7</button>
-                    <button>8</button>
-                    <button>9</button>
-                    <button>10</button>
-                </div>
             </div>
+            <div class="page__btns">
+                
+            </div>
+        </section>
+        <section class="content">
             <ul class="responseList"></ul>
         </section>
+        <section class="loader">
+            <h1>Загрузка...</h1>
+        </section>
         <footer class="footer">
-
+            <h3>Сафин Динис</h3>
         </footer>
     </div>
     <script src="script.js"></script>
 </body>
-
 </html>

@@ -31,7 +31,7 @@ body {
 
 button {
     font-size: 15px;
-    padding: 5px 40px;
+    padding: 5px 25px;
     border: 0;
     border-radius: 20px;
     background: #252EFF;
@@ -40,6 +40,7 @@ button {
 }
 
 button:hover {
+    
     color: #252EFF;
     background-color: white;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
@@ -69,14 +70,67 @@ button:active {
     text-align: center;
 }
 
-nav {
+.nav__btns {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
 }
-
-.post {
+.page-list {
+    display: none;
+    justify-content: center;
+    gap: 10px;
 }
-.post-body {
+.page__btns {}
+.page__btn {
+    padding: 5px 10px;
+    background-color: #6066FF;
+}
+.page__btn:hover {
+    transform: scale(1.2);
+}
+.active{
+    transform: scale(1.2);
+    color: #252EFF;
+    background-color: white;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+    font-weight: 700;
+}
+#limitItems {
+    font-size: 15px;
+    padding: 5px 10px;
+    border: 1px solid #252EFF;;
+    border-radius: 20px;
+    color: #252EFF;
+    transition: all .1s ease;
+}
+#limitItems:hover {
+    color: #252EFF;
+    background-color: white;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+    font-weight: 700;
+}
+#limitItems:focus {
+    border-radius: 20px 20px 0 0;
+}
+.loader,.content {
+    display: none;
+}
+.item {
+text-align: left;
+}
+.item-info {
     display: flex;
-
+    flex-direction: column;
+    gap: 10px;
+}
+.comment-from {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.complete {
+    background-color: aquamarine;
+}
+.user {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
