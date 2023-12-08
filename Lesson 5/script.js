@@ -4,21 +4,25 @@ let pageButtons = document.querySelector('.page__btns')
 let pageList = document.querySelector('.page-list')
 let select = document.querySelector('#limitItems')
 let content = document.querySelector('.content')
-let loader = document.querySelector('.loader')
+let loaderBlock = document.querySelector('.loader')
 let responseList = document.querySelector('.responseList')
 let data
 let key
 let limitItems
-let currentPage
+let currentPage = 1;
+
 // выпадающий список для отрисовки по условию
 select.addEventListener('change', () => {
     main()
 })
+
 // делегирование кнопок навигации с последующим запуском основного кода
 navButtons.addEventListener('click', async item => {
     if (item.target.tagName === 'BUTTON') {
         key = item.target.innerHTML.toLowerCase()
-        await fetchData(key)
+        loader.start()
+        data = await fetchData(key)
+        loader.stop()
         main()
     }
     listNavButtons.forEach(btn => {
@@ -29,22 +33,36 @@ navButtons.addEventListener('click', async item => {
     })
 
 })
+
+const loader = (() => {
+
+    const start = () => {
+        content.style.display = 'none';
+        loaderBlock.style.display = 'block';
+    };
+
+    const stop = () => {
+        loaderBlock.style.display = 'none';
+        content.style.display = 'block';
+    };
+    return {
+        start,
+        stop,
+    };
+})();
+
 // запрос на сервер и получение data
 async function fetchData(key) {
     try {
-        loader.style.display = 'block'
-        content.style.display = 'none'
-        pageList.style.display = 'none'
-        const response = await fetch(`https://jsonplaceholder.typicode.com/${key}`)
+        const response = await fetch(`https://jsonplaceholder.typicode.com/${key}`);
         data = await response.json();
-        loader.style.display = 'none'
-        content.style.display = 'block'
-        
-    } catch(e) {
-        alert(e)
+        return data
+    } catch (e) {
+        alert(e);
+        loader.stop()
     }
-    
 }
+
 // подготовка данных, которые будут отображаться на конкретной странице
 function preparePage(data, key, limitItems, page) {
     page--
@@ -72,6 +90,7 @@ function preparePage(data, key, limitItems, page) {
             break;
     }
 }
+
 // добавление и обработка пагинации
 function showPagination(limitPages) {
     pageList.style.display = 'flex'
@@ -85,11 +104,11 @@ function showPagination(limitPages) {
     // обработка кнопок страниц
     let pageBtns = [...document.querySelectorAll('.page__btn')]
     pageBtns.forEach(btn => {
-                btn.classList.remove('active')
-                if (btn.innerHTML == currentPage) {
-                    btn.classList.add('active')
-                }
-            });
+        btn.classList.remove('active')
+        if (btn.innerHTML == currentPage) {
+            btn.classList.add('active')
+        }
+    });
     pageButtons.addEventListener('click', item => {
         if (item.target.tagName === 'BUTTON') {
             currentPage = item.target.innerHTML;
@@ -103,6 +122,7 @@ function showPagination(limitPages) {
         }
     })
 }
+
 // главный кодик
 function main() {
     currentPage = 1;
@@ -212,97 +232,81 @@ function showUsers(data) {
                         <div class="item-username"><h4>Username:</h4><span>${data[i].username}</span></div>
                         <div class="item-email"><h4>E-mail:</h4><span>${data[i].email}</span></div>
                     </div>
-                    <button>Show</button>
+                    <button class="show-btn" data-user-id="${data[i].id}">Show more</button>
                 </div>
             </li>`
             ;
     }
+
+    document.querySelectorAll('.show-btn').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const userId = button.getAttribute('data-user-id');
+            await showUserDetails(userId);
+
+            history.pushState({}, null, `/users/${userId}`);
+        });
+    });
 }
 
+// Отправка запроса на детали Пользователя
+async function showUserDetails(userId) {
+    try {
+        loaderBlock.style.display = 'block';
+        content.style.display = 'none';
+        pageList.style.display = 'none';
+        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+        const userData = await response.json();
+        loaderBlock.style.display = 'none';
 
+        displayUserInfo(userData);
+    } catch (e) {
+        console.log(e);
+    }
+}
 
+// шаблоны для парсинга данных отдельного пользователя
+function displayUserInfo(userData) {
+    let userDetailContainer = document.querySelector('.userDetail');
+    userDetailContainer.style.display = 'block'
 
+    userDetailContainer.innerHTML = `
+    <li>
+        <div class="item user">
+            <div class="item-info">
+                <div class="item-id"><h4>ID #${userData.id}</h4></div>
+                <div class="item-name"><h4>Name:</h4><span>${userData.name}</span></div>
+                <div class="item-username"><h4>Username:</h4><span>${userData.username}</span></div>
+                <div class="item-email"><h4>E-mail:</h4><span>${userData.email}</span></div>
+                <div class="item-address">
+                    <h4>Address:</h4>
+                    <p>Street: ${userData.address.street}</p>
+                    <p>Suite: ${userData.address.suite}</p>
+                    <p>City: ${userData.address.city}</p>
+                    <p>Zipcode: ${userData.address.zipcode}</p>
+                    <p>Geo: Lat ${userData.address.geo.lat}, Lng ${userData.address.geo.lng}</p>
+                </div>
+                <div class="item-phone"><h4>Phone:</h4><span>${userData.phone}</span></div>
+                <div class="item-website"><h4>Website:</h4><span>${userData.website}</span></div>
+                <div class="item-company">
+                    <h4>Company:</h4>
+                    <p>Name: ${userData.company.name}</p>
+                    <p>CatchPhrase: ${userData.company.catchPhrase}</p>
+                    <p>BS: ${userData.company.bs}</p>
+                </div>
+            </div>
+            <button class="back-btn">Back to Users</button>
+        </div>
+    </li>`;
+    const backButton = userDetailContainer.querySelector('.back-btn');
+    if (backButton) {
+        backButton.addEventListener('click', () => {
+            loaderBlock.style.display = 'none';
+            content.style.display = 'block';
+            pageList.style.display = 'flex';
+            userDetailContainer.style.display = 'none'
+            userDetailContainer.innerHTML = '';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// async function fetchPosts() {
-//     try {
-//       this.isPostsLoading = true;
-//         const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-//           params: {
-//             _page: this.page,
-//             _limit: this.limit,
-//           }
-//         });
-//         this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-//         this.posts = response.data;
-//     } catch (e) {
-//       alert('Ошибка')
-//     } finally {
-//       this.isPostsLoading = false;
-//     }
-//   },
-//   async loadMorePosts() {
-//     try {
-//       this.page += 1;
-//         const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-//           params: {
-//             _page: this.page,
-//             _limit: this.limit,
-//           }
-//         });
-//         this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-//         this.posts = [...this.posts, ...response.data];
-//     } catch (e) {
-//       alert('Ошибка')
-//     } finally {
-//     }
-//   }
-// },
-// mounted() {
-//   this.fetchPosts();
-// },
+            history.pushState({}, null, '/');
+        });
+    }
+}
