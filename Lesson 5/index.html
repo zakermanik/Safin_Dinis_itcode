@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="Z_icon.ico" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <title>Сафин Динис</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <nav class="nav">
+                <div class="nav__btns">
+                    <button class="">Posts</button>
+                    <button class="">Comments</button>
+                    <button class="">Albums</button>
+                    <button class="">Photos</button>
+                    <button class="">Todos</button>
+                    <button class="">Users</button>
+                </div>
+            </nav>
+        </header>
+        <section class="page-list" style="display: none;">
+            <div class="menu">
+                <select id="limitItems">
+                    <option value="1">5</option>
+                    <option value="2" selected>10</option>
+                    <option value="3">20</option>
+                    <option value="4">40</option>
+                </select>
+            </div>
+            <div class="page__btns">
+                
+            </div>
+        </section>
+        <section class="content" style="display: none;">
+            <ul class="responseList"></ul>
+        </section>
+        <section class="loader">
+            <h1>Загрузка...</h1>
+        </section>
+        <div class="userDetail" style="display: none;"></div>
+        <footer class="footer">
+            <h3>Сафин Динис</h3>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
