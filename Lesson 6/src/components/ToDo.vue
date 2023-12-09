@@ -2,10 +2,10 @@
     <div class="todo_container">
         <div class="todo_wrap">
             <div class="title_wrap">
-                <p class="title">ToDo List</p>
+                <p class="title">Список дел</p>
             </div>
             <form class="create_wrap">
-                <input v-model="creatingToDo.name" class="create_input" type="text" />
+                <input v-model="creatingToDo.name" class="create_input" type="text" placeholder="Введите имя задачи..."/>
                 <select v-model="creatingToDo.priority" class="create_select">
                     <option value="normal">Обычная</option>
                     <option value="important">Важная</option>
@@ -20,6 +20,10 @@
                 <div v-for="(todoItem, index) in filteredTodoList" :key="index" class="todo_list_element">
                     <div class="element_content">
                         <input v-model="todoItem.status" type="checkbox" />
+
+                        <div v-if="todoItem.priority == 'important'" class="element_priority">
+                            Важно!
+                        </div>
                         <p :class="{ 'strikethrough': todoItem.status }" v-if="!todoItem.isEditing">
                             {{ todoItem.name }}
                         </p>
@@ -53,6 +57,7 @@ const creatingToDo = ref({
 });
 
 const editingInput = ref();
+
 const filter = ref('all');
 
 const notification = ref<string | null>(null);
@@ -61,7 +66,7 @@ const showNotification = (message: string) => {
     notification.value = message;
     setTimeout(() => {
         notification.value = null;
-    }, 3000); // Hide the notification after 3 seconds
+    }, 3000);
 };
 
 const filteredTodoList = computed(() => {
@@ -105,24 +110,12 @@ const handleStopEdit = (todoItem: IToDoItem) => {
 
 const handleSaveEdited = (todoItem: IToDoItem) => {
     let todoToSaveIndex = todoList.value.indexOf(todoItem);
-
-    const foundInput = editingInput.value.find((input: HTMLElement) => {
-        // Check if 'index' attribute exists before accessing it
-        return input.attributes && 'index' in input.attributes;
-    });
-
-    if (foundInput && foundInput.attributes) {
-        // Access the 'index' attribute value
-        const indexAttribute = foundInput.attributes.getNamedItem('index');
-        const indexValue = indexAttribute ? indexAttribute.value : null;
-
-        // Use the index value if available
-        if (indexValue !== null) {
-            todoList.value[todoToSaveIndex].name = indexValue;
-            todoList.value[todoToSaveIndex].isEditing = false;
-        }
-    }
+    todoList.value[todoToSaveIndex].name = editingInput.value.find(
+        (input) => +input.attributes.index.value === todoToSaveIndex
+    ).value;
+    todoList.value[todoToSaveIndex].isEditing = false;
 };
+
 
 interface IToDoItem {
     status: boolean;
@@ -143,18 +136,22 @@ const todoList = ref<IToDoItem[]>([
   
 <style lang="scss" scoped>
 .todo_container {
-    width: 100vw;
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
 
     .todo_wrap {
-        width: 500px;
-        height: 800px;
-        border: 1px black solid;
-        padding: 0 20px;
-        background-color: #242424;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        min-width: 700px;
+        min-height: 500px;
+        align-items: flex-start;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: white;
+        color: black;
 
         .title {
             color: black;
@@ -165,19 +162,51 @@ const todoList = ref<IToDoItem[]>([
         .create_wrap {
             display: flex;
             align-items: center;
+            width: 100%;
             gap: 10px;
 
             .create_input {
-                height: 24px;
+                width: 50%;
+                padding: 10px 15px;
+                border: 2px solid #6066FF;
+                border-radius: 20px;
+            }
+
+            .create_input::placeholder {
+                font-weight: 500;
+                font-size: 15px;
+            }
+
+
+            .create_select {
+                padding: 10px 15px;
+                border: 2px solid #252EFF;
+                border-radius: 20px;
+                color: #252EFF;
+                transition: all .1s ease;
+            }
+
+            .create_select:hover {
+                color: #252EFF;
+                background-color: white;
+                box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+                font-weight: 700;
+            }
+
+            .create_select:focus {
+                border-radius: 20px 20px 0 0;
             }
 
             .create_button {
-                padding: 4px 8px;
+                padding: 10px 15px;
             }
         }
 
+        .filter_wrap {}
+
         .task_list_wrap {
             margin: 20px 0;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -188,9 +217,10 @@ const todoList = ref<IToDoItem[]>([
                 align-items: center;
                 justify-content: space-between;
                 width: 100%;
-                background-color: #6d6d6d;
-                border-radius: 10px;
-                padding: 0 10px;
+                background-color: white;
+                box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+                border-radius: 20px;
+                padding: 10px 15px;
 
                 .element_content {
                     display: flex;
@@ -198,9 +228,19 @@ const todoList = ref<IToDoItem[]>([
                     gap: 10px;
 
                     p {
+                        min-width: 10px;
                         margin: 6px 0;
                     }
+
+                    .element_priority {
+                        background-color: rgb(128, 197, 240);
+                        padding: 5px 10px;
+                        font-size: 12px;
+                        border-radius: 20px;
+                    }
                 }
+
+
 
                 .element_buttons {
                     display: flex;
@@ -208,8 +248,13 @@ const todoList = ref<IToDoItem[]>([
                     gap: 10px;
 
                     button {
-                        padding: 3px 6px;
-                        font-size: 14px;
+                        background-color: #6066FF;
+                        padding: 5px 10px;
+                        font-size: 12px;
+                    }
+
+                    button:hover {
+                        background-color: white;
                     }
                 }
             }
