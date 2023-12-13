@@ -4,45 +4,16 @@
             <div class="title_wrap">
                 <p class="title">Список дел</p>
             </div>
+            <!-- <TodoForm /> -->
             <form class="create_wrap">
-                <input v-model="creatingToDo.name" class="create_input" type="text" placeholder="Введите имя задачи..."/>
+                <input v-model="creatingToDo.name" class="create_input" type="text" placeholder="Введите имя задачи..." />
                 <select v-model="creatingToDo.priority" class="create_select">
                     <option value="normal">Обычная</option>
                     <option value="important">Важная</option>
                 </select>
                 <button @click.prevent="handleSendToDo(creatingToDo)">Завести задачу</button>
             </form>
-            <div class="filter_wrap">
-                <button @click="handleFilter('all')">Все задачи</button>
-                <button @click="handleFilter('important')">Важные задачи</button>
-            </div>
-            <div class="task_list_wrap">
-                <div v-for="(todoItem, index) in filteredTodoList" :key="index" class="todo_list_element">
-                    <div class="element_content">
-                        <input v-model="todoItem.status" type="checkbox" />
-
-                        <div v-if="todoItem.priority == 'important'" class="element_priority">
-                            Важно!
-                        </div>
-                        <p :class="{ 'strikethrough': todoItem.status }" v-if="!todoItem.isEditing">
-                            {{ todoItem.name }}
-                        </p>
-                        <input v-else ref="editingInput" :value="todoItem.name" :index="index" type="text" />
-                    </div>
-                    <div v-if="!todoItem.isEditing" class="element_buttons">
-                        <button @click.prevent="handleEditToDo(todoItem)">
-                            Редактировать
-                        </button>
-                        <button @click.prevent="handleDeleteToDo(todoItem)">Удалить</button>
-                    </div>
-                    <div v-else class="element_buttons">
-                        <button @click.prevent="handleSaveEdited(todoItem)">
-                            Сохранить
-                        </button>
-                        <button @click.prevent="handleStopEdit(todoItem)">Отменить</button>
-                    </div>
-                </div>
-            </div>
+            <ToDoList :todoList="filteredTodoList" />
         </div>
     </div>
     <div v-if="notification" class="notification">{{ notification }}</div>
@@ -50,6 +21,9 @@
   
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { IToDoItem } from '../interfaces/ITodoItem.ts'
+import TodoForm from '../components/ToDoForm.vue'
+import ToDoList from '../components/ToDoList.vue'
 
 const creatingToDo = ref({
     name: "",
@@ -58,8 +32,18 @@ const creatingToDo = ref({
 
 const editingInput = ref();
 
-const filter = ref('all');
 
+const filter = ref('all');
+const filteredTodoList = computed(() => {
+    if (filter.value === 'important') {
+        return todoList.value.filter(item => item.priority === 'important');
+    }
+    return todoList.value;
+});
+
+const handleFilter = (type: string) => {
+    filter.value = type;
+};
 const notification = ref<string | null>(null);
 
 const showNotification = (message: string) => {
@@ -68,17 +52,6 @@ const showNotification = (message: string) => {
         notification.value = null;
     }, 3000);
 };
-
-const filteredTodoList = computed(() => {
-    if (filter.value === 'important') {
-        return todoList.value.filter(item => item.priority === 'important');
-    }
-    return todoList.value;
-});
-const handleFilter = (type: string) => {
-    filter.value = type;
-};
-
 
 
 
@@ -116,13 +89,6 @@ const handleSaveEdited = (todoItem: IToDoItem) => {
     todoList.value[todoToSaveIndex].isEditing = false;
 };
 
-
-interface IToDoItem {
-    status: boolean;
-    name: string;
-    isEditing: boolean;
-    priority: string; // новое свойство для приоритета
-}
 
 const todoList = ref<IToDoItem[]>([
     {
