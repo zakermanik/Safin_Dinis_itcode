@@ -1,36 +1,41 @@
 <template>
-    <div class="element_content">
-        <input v-model="todoItem.status" type="checkbox" />
+    <div>
+        <div class="element_content">
+            <input v-model="todoItem.status" type="checkbox" />
 
-        <div v-if="todoItem.priority == 'important'" class="element_priority">
-            Важно!
+            <div v-if="todoItem.priority == 'important'" class="element_priority">
+                Важно!
+            </div>
+            <p :class="{ 'strikethrough': todoItem.status }" v-if="!todoItem.isEditing">
+                {{ todoItem.name }}
+            </p>
+            <input v-else ref="editingInput" :value="todoItem.name" :index="index" type="text" />
         </div>
-        <p :class="{ 'strikethrough': todoItem.status }" v-if="!todoItem.isEditing">
-            {{ todoItem.name }}
-        </p>
-        <input v-else ref="editingInput" :value="todoItem.name" :index="index" type="text" />
-    </div>
-    <div v-if="!todoItem.isEditing" class="element_buttons">
-        <button @click.prevent="handleEditToDo(todoItem)">
-            Редактировать
-        </button>
-        <button @click.prevent="emit('delete', todoItem)">Удалить</button>
-    </div>
-    <div v-else class="element_buttons">
-        <button @click.prevent="handleSaveEdited(todoItem)">
-            Сохранить
-        </button>
-        <button @click.prevent="handleStopEdit(todoItem)">Отменить</button>
+        <div v-if="!todoItem.isEditing" class="element_buttons">
+            <button @click.prevent="emit('edit', todoItem)">
+                Редактировать
+            </button>
+            <button @click.prevent="emit('delete', todoItem)">Удалить</button>
+        </div>
+        <div v-else class="element_buttons">
+            <button @click.prevent="emit('save', todoItem)">
+                Сохранить
+            </button>
+            <button @click.prevent="emit('stop', todoItem)">Отменить</button>
+        </div>
     </div>
 </template>
 <script setup lang="ts">
 import { IToDoItem } from '../interfaces/ITodoItem';
+import { toRefs } from 'vue';
 
 interface Props {
-    todoList: IToDoItem[];
+    todoItem: IToDoItem;
 }
 
-const { todoList } = defineProps<Props>();
+const props = defineProps<Props>();
+const { todoItem } = toRefs(props);
+;
 
 const emit = defineEmits<{
     (emit: "delete", todo: IToDoItem): void;
@@ -39,4 +44,23 @@ const emit = defineEmits<{
     (emit: "stop", todo: IToDoItem): void;
 }>();
 </script>
-<style></style>=""
+<style lang="scss" scoped>
+.element_content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    p {
+        min-width: 10px;
+        margin: 6px 0;
+    }
+
+    .element_priority {
+        background-color: rgb(128, 197, 240);
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 20px;
+    }
+}
+
+</style>

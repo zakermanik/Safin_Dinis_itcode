@@ -63,7 +63,6 @@ button:hover {
   color: #252EFF;
   background-color: white;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-  font-weight: 700;
 }
 
 button:active {

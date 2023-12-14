@@ -4,15 +4,8 @@
             <div class="title_wrap">
                 <p class="title">Список дел</p>
             </div>
-            <!-- <TodoForm /> -->
-            <form class="create_wrap">
-                <input v-model="creatingToDo.name" class="create_input" type="text" placeholder="Введите имя задачи..." />
-                <select v-model="creatingToDo.priority" class="create_select">
-                    <option value="normal">Обычная</option>
-                    <option value="important">Важная</option>
-                </select>
-                <button @click.prevent="handleSendToDo(creatingToDo)">Завести задачу</button>
-            </form>
+            <TodoForm />
+            
             <ToDoList :todoList="filteredTodoList" />
         </div>
     </div>
@@ -21,29 +14,13 @@
   
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { IToDoItem } from '../interfaces/ITodoItem.ts'
+import { IToDoItem } from '../interfaces/ITodoItem'
 import TodoForm from '../components/ToDoForm.vue'
 import ToDoList from '../components/ToDoList.vue'
 
-const creatingToDo = ref({
-    name: "",
-    priority: "normal",
-});
-
-const editingInput = ref();
 
 
-const filter = ref('all');
-const filteredTodoList = computed(() => {
-    if (filter.value === 'important') {
-        return todoList.value.filter(item => item.priority === 'important');
-    }
-    return todoList.value;
-});
 
-const handleFilter = (type: string) => {
-    filter.value = type;
-};
 const notification = ref<string | null>(null);
 
 const showNotification = (message: string) => {
@@ -54,6 +31,16 @@ const showNotification = (message: string) => {
 };
 
 
+const filter = ref('all');
+const filteredTodoList = computed(() => {
+    if (filter.value === 'important') {
+        return todoList.value.filter(item => item.priority === 'important');
+    }
+    return todoList.value;
+});
+const handleFilter = (type: string) => {
+    filter.value = type;
+};
 
 const handleSendToDo = (todoData: { name: string; priority: string }) => {
     todoList.value.push({ status: false, ...creatingToDo.value, isEditing: false });
@@ -63,31 +50,7 @@ const handleSendToDo = (todoData: { name: string; priority: string }) => {
     console.log('Creating ToDo:', todoData);
 };
 
-const handleDeleteToDo = (todoItem: IToDoItem) => {
-    let todoToDeleteIndex = todoList.value.indexOf(todoItem);
-    if (todoToDeleteIndex !== -1) {
-        todoList.value.splice(todoToDeleteIndex, 1);
-        showNotification('Задача успешно удалена!');
-    }
-};
 
-const handleEditToDo = (todoItem: IToDoItem) => {
-    let todoToEditIndex = todoList.value.indexOf(todoItem);
-    todoList.value[todoToEditIndex].isEditing = true;
-};
-
-const handleStopEdit = (todoItem: IToDoItem) => {
-    let todoEditingIndex = todoList.value.indexOf(todoItem);
-    todoList.value[todoEditingIndex].isEditing = false;
-};
-
-const handleSaveEdited = (todoItem: IToDoItem) => {
-    let todoToSaveIndex = todoList.value.indexOf(todoItem);
-    todoList.value[todoToSaveIndex].name = editingInput.value.find(
-        (input) => +input.attributes.index.value === todoToSaveIndex
-    ).value;
-    todoList.value[todoToSaveIndex].isEditing = false;
-};
 
 
 const todoList = ref<IToDoItem[]>([
@@ -96,6 +59,18 @@ const todoList = ref<IToDoItem[]>([
         name: "Сделать домашку",
         isEditing: false,
         priority: "normal"
+    },
+    {
+        status: false,
+        name: "Пойти гулять",
+        isEditing: false,
+        priority: "normal"
+    },
+    {
+        status: false,
+        name: "Дождаться GTA VI",
+        isEditing: false,
+        priority: "important"
     },
 ]);
 </script>
@@ -168,65 +143,25 @@ const todoList = ref<IToDoItem[]>([
             }
         }
 
-        .filter_wrap {}
 
-        .task_list_wrap {
-            margin: 20px 0;
-            width: 100%;
+        .element_buttons {
             display: flex;
-            flex-direction: column;
             align-items: center;
             gap: 10px;
 
-            .todo_list_element {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
+            button {
+                background-color: #6066FF;
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+
+            button:hover {
                 background-color: white;
-                box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
-                border-radius: 20px;
-                padding: 10px 15px;
-
-                .element_content {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-
-                    p {
-                        min-width: 10px;
-                        margin: 6px 0;
-                    }
-
-                    .element_priority {
-                        background-color: rgb(128, 197, 240);
-                        padding: 5px 10px;
-                        font-size: 12px;
-                        border-radius: 20px;
-                    }
-                }
-
-
-
-                .element_buttons {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-
-                    button {
-                        background-color: #6066FF;
-                        padding: 5px 10px;
-                        font-size: 12px;
-                    }
-
-                    button:hover {
-                        background-color: white;
-                    }
-                }
             }
         }
     }
 }
+
 
 .notification {
     position: fixed;
