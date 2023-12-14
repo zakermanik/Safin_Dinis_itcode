@@ -1,23 +1,57 @@
 <template>
     <form class="create_wrap">
-        <input v-model="creatingToDo.name" class="create_input" type="text" placeholder="Введите имя задачи..." />
+        <input ref="inputRef" v-model="creatingToDo.name" class="create_input" type="text"
+            placeholder="Введите имя задачи..." />
         <select v-model="creatingToDo.priority" class="create_select">
             <option value="normal">Обычная</option>
             <option value="important">Важная</option>
         </select>
-        <button @click.prevent="handleSendToDo(creatingToDo)">Завести задачу</button>
+        <button @click.prevent="createTodo">Завести задачу</button>
     </form>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { IToDoItem } from '../interfaces/ITodoItem';
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
 const creatingToDo = ref({
     name: "",
     priority: "normal",
 });
 
+
+const createTodo = () => {
+    const todo = {
+        id: Date.now(),
+        status: false,
+        name: creatingToDo.value.name,
+        isEditing: false,
+        priority: creatingToDo.value.priority,
+    };
+    if (!todo.name) {
+        emit('notification', 'Введите имя задачи!', 'red')
+    } else {
+        emit('createTodo', todo)
+        emit('notification', 'Новая задача успешно добавлена', '#6066FF')
+        creatingToDo.value.name = "";
+    };
+
+    if (inputRef.value) {
+        inputRef.value.focus();
+    }
+};
+
 const emit = defineEmits<{
     (emit: "createTodo", todo: IToDoItem): void;
+    (emit: "notification", message: string, bgColor: string): void;
 }>();
+
+onMounted(() => {
+    if (inputRef.value) {
+        inputRef.value.focus();
+    }
+});
 </script>
 <style  lang="scss" scoped>
 .create_wrap {
@@ -52,7 +86,6 @@ const emit = defineEmits<{
         color: #252EFF;
         background-color: white;
         box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
-        font-weight: 700;
     }
 
     .create_select:focus {
