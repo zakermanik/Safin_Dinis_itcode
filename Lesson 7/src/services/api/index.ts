@@ -1,2 +1,3 @@
-import * as recipes from "./rest/recipes"
+import * as recipes from "./rest/recipes";
+
 export { recipes };

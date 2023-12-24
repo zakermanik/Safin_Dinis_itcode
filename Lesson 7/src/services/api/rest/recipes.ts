@@ -10,3 +10,12 @@ export const fetchRandomRecipes = (numberOfRecipes: number) =>
             "x-api-key": apiKey,
         },
     });
+    
+export const fetchOneRecipe = (id: number) =>
+    makeRequest({
+        url: `https://api.spoonacular.com/recipes/${id}/information`,
+        method: "GET",
+        headers: {
+            "x-api-key": apiKey,
+        },
+    });
