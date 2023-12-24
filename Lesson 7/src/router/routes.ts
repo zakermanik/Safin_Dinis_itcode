@@ -11,8 +11,8 @@ const routes: readonly RouteRecordRaw[] = [
         component: MainPage
     },
     {
-        path: "/food",
-        name: "Food",
+        path: "/recipes",
+        name: "recipes",
         component: RecipesListPage,
     },
     {
