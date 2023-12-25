@@ -19,3 +19,26 @@ export const fetchOneRecipe = (id: number) =>
             "x-api-key": apiKey,
         },
     });
+export const fetchRecipes = (ids: string) =>
+    makeRequest({
+        url: `https://api.spoonacular.com/recipes/informationBulk?ids=${ids}`,
+        method: "GET",
+        headers: {
+            "x-api-key": apiKey,
+        },
+    });
+export const fetchSearchRecipes = (query: string, offset: number, number: number, diet: string, cuisine: string) =>
+    makeRequest({
+        url: `https://api.spoonacular.com/recipes/complexSearch`,
+        method: "GET",
+        params: {
+            query,
+            offset,
+            number,
+            diet,
+            cuisine,
+        },
+        headers: {
+            "x-api-key": apiKey,
+        },
+    });

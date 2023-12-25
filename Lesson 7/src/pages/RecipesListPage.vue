@@ -1,19 +1,15 @@
 <template>
     <h1>Случайные рецепты</h1>
+
     <div class="menu">
-        <label for="recipeNumber">Количество рецептов:</label>
-        <select id="recipeNumber" v-model="selectedRecipeNumber">
-            <option selected value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-        </select>
         <el-button @click="loadRecipes">Мне повезёт!</el-button>
     </div>
-
-    <div>
+    <div class="recipe-list">
         <RecipeList class="recipe-list" :recipes="recipesStore.recipes" />
     </div>
-    <router-view></router-view>
+    <div class="recipe-info">
+        <router-view></router-view>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -23,19 +19,18 @@ import { ref, onMounted } from 'vue';
 import { useRecipesStore } from '../store/recipes-store';
 
 const recipesStore = useRecipesStore();
-const selectedRecipeNumber = ref(1);
+const selectedRecipeNumber = ref(3);
 
 const loadRecipes = async () => {
     await recipesStore.getRandomRecipes(selectedRecipeNumber.value);
-    console.log(recipesStore.recipes);
 };
 
-// onMounted(() => {
-//     if (!recipesStore.hasMounted) {
-//         loadRecipes()
-//         recipesStore.hasMounted = true;
-//     }
-// });
+onMounted(() => {
+    if (!recipesStore.hasMounted) {
+        loadRecipes()
+        recipesStore.hasMounted = true;
+    }
+});
 
 </script>
 
@@ -43,11 +38,19 @@ const loadRecipes = async () => {
 h1 {
     text-align: center;
 }
+
 .menu {
     display: flex;
     justify-content: center;
 }
+
 .recipe-list {
+    display: flex;
+    justify-content: center;
+}
+
+.recipe-info {
+    margin-top: 10px;
     display: flex;
     justify-content: center;
 }

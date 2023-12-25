@@ -1,6 +1,6 @@
 <template>
-    <div class="list">
-        <RecipesListItem v-for="recipe in recipes" :key="recipe.id" :recipe="recipe" @click="navigateToRecipe(recipe.id)" />
+    <div class="recipe-list">
+        <RecipesListSearchItem v-for="recipe in recipes" :key="recipe.id" :recipe="recipe" @click="navigateToRecipe(recipe.id)" />
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { IRecipeItem } from '../interfaces/IRecipeItem';
-import RecipesListItem from './RecipesListItem.vue';
+import RecipesListSearchItem from './RecipesListSearchItem.vue';
 
 interface Props {
     recipes: IRecipeItem[];
@@ -25,11 +25,12 @@ const navigateToRecipe = (recipeId: number) => {
 </script>
 
 <style lang="scss" scoped>
-.list {
-    border-radius: 10px;
+.recipe-list {
+    justify-content: center;
     padding: 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 20px; 
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    flex-wrap: wrap; /* Enable wrapping to create new rows */
+    gap: 30px;
 }
 </style>

@@ -1,42 +1,80 @@
 <template>
-    <h1>Рецепт номер - {{ recipe.id }}</h1>
     <div class="list-item">
-        <div class="list-item-info">
-            <h2>{{ recipe.title }}</h2>
-            <p v-html="recipe.summary"></p>
-            <p>Dish Type: {{ recipe.dishType }}</p>
+        <div class="list-item-main" v-show="!recipesStore.isLoadingOneRecipe">
+            <div class="list-item-info">
+                <h2>{{ recipesStore.recipe.title }}</h2>
+                <p v-html="recipesStore.recipe.summary"></p>
+                <p>Dish Type: {{ recipesStore.recipe.dishType }}</p>
+            </div>
+            <div class="list-item-img">
+                <img :src="recipesStore.recipe.image" alt="Recipe Image" />
+            </div>
         </div>
-        <div class="list-item-img">
-            <img :src="recipe.image" alt="Recipe Image" />
+        <div v-show="recipesStore.isLoadingOneRecipe">
+            <el-skeleton style="width: 960px; height: 400px;" animated>
+                <template #template>
+                    <div style="padding: 14px">
+                        <el-skeleton-item variant="p" style="width: 100%;" />
+                        <div style=" display: flex; align-items: center; justify-items: space-between;">
+                            <el-skeleton-item variant="text" style="width: 30%" />
+                        </div>
+                    </div>
+                    <el-skeleton-item variant="image" style="width: 100%; height: 100%;" />
+                </template>
+            </el-skeleton>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRecipesStore } from '../store/recipes-store';
+import { useRoute } from 'vue-router';
 
 const recipesStore = useRecipesStore();
-const recipe = ref(recipesStore.recipe);
 
+const route = useRoute();
+
+onMounted(() => {
+    const id = Number(route.params.id);
+    if (!isNaN(id)) {
+        fetchRecipe(id);
+    }
+});
+
+watch(
+    () => route.params.id,
+    (newRecipeId) => {
+        fetchRecipe(newRecipeId);
+    }
+);
+
+const fetchRecipe = async (id: number) => {
+    try {
+        await recipesStore.getOneRecipe(id);
+    } catch (error: any) {
+        console.error('Ошибка получения 1 рецепта:', error.message);
+    } 
+};
 </script>
 
 <style lang="scss" scoped>
-.list-item {
-    max-width: 600px;
-    max-height: 400px;
+.list-item-main {
+    width: 950px;
+    height: 400px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .2);
     padding: 10px;
     justify-content: center;
     align-items: center;
-    background-color: rgb(255, 255, 255);
     z-index: 1;
-    cursor: pointer;
+
+    font-size: 14px;
 
     .list-item-info {
         position: relative;
         margin-bottom: -120px;
+
         h2,
         p {
             max-height: 50px;
@@ -48,19 +86,20 @@ const recipe = ref(recipesStore.recipe);
         background: linear-gradient(180deg, rgba(255, 255, 255, 1) 25%, rgba(255, 255, 255, 0) 60%);
         margin: -10px;
         border-radius: 10px;
-        width: 600px;
-        
+        width: inherit;
+
 
         img {
             z-index: -1;
             top: 3px;
             position: relative;
             border-radius: 10px;
-            width: 600px;
+            width: inherit;
         }
     }
 }
-.list-item:hover {
+
+.list-item-main:hover {
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .5);
 }
 </style>

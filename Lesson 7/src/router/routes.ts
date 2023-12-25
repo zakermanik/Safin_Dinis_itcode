@@ -31,6 +31,13 @@ const routes: readonly RouteRecordRaw[] = [
         path: "/Search",
         name: "Search",
         component: SearchPage,
+        children: [
+            {
+                path: ":id",
+                name: "searchRecipe",
+                component: RecipeItemPage,
+            },
+        ],
     }
 ]
 
