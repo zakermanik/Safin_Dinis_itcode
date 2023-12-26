@@ -48,6 +48,10 @@ input {
   padding: 10px 15px;
   background-color: white;
 }
+textarea:focus, input:focus{
+  outline: 0;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+}
 button {
   padding: 10px 15px;
   cursor: pointer;
@@ -63,16 +67,12 @@ button:hover {
   color: #252EFF;
   background-color: white;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2);
-  font-weight: 700;
 }
 
 button:active {
   background-color: black;
 }
 
-.card {
-  padding: 2em;
-}
 
 #app {
   max-width: 1280px;
