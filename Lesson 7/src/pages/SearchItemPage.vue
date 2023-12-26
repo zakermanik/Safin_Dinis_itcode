@@ -13,7 +13,7 @@
                 <img :src="recipesStore.recipe.image" alt="Recipe Image" />
             </div>
         </div>
-        <div v-show="recipesStore.isLoadingOneRecipe" style="width:inherit">
+        <div v-show="recipesStore.isLoadingOneRecipe" style="width:70%">
             <el-skeleton style="" animated>
                 <template #template>
                     <div class="skelet-info">
@@ -76,13 +76,12 @@ const fetchRecipe = async (id: number) => {
         await recipesStore.getOneRecipe(id);
     } catch (error: any) {
         console.error('Ошибка получения 1 рецепта:', error.message);
-    } 
+    }
 };
 </script>
 
 <style lang="scss" scoped>
 .list-item {
-    width: 70%;
     display: flex;
     justify-content: center;
 

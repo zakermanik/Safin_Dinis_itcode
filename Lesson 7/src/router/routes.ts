@@ -4,6 +4,7 @@ import RecipesListPage from "../pages/RecipesListPage.vue"
 import RecipeItemPage from "../pages/RecipeItemPage.vue"
 import AboutUsPage from "../pages/AboutUsPage.vue"
 import SearchPage from "../pages/SearchPage.vue"
+import SearchItemPage from "../pages/SearchItemPage.vue"
 
 const routes: readonly RouteRecordRaw[] = [
     {
@@ -28,14 +29,14 @@ const routes: readonly RouteRecordRaw[] = [
         component: AboutUsPage,
     },
     {
-        path: "/Search",
+        path: "/search",
         name: "Search",
         component: SearchPage,
         children: [
             {
-                path: ":id",
+                path: "recipes/:id",
                 name: "searchRecipe",
-                component: RecipeItemPage,
+                component: SearchItemPage,
             },
         ],
     }

@@ -4,10 +4,11 @@ import { recipes } from '../services/api';
 
 export const useRecipesStore = defineStore("recipes-store", {
   state: () => ({
-    recipe: {} as IRecipeItem,
+    recipe: {},
     recipe_ID: 0 as number,
     recipes: [] as IRecipeItem[],
     searchingRecipes: [] as IRecipeItem[],
+    totalResults: 0 as number,
 
     isLoading: false,
     isLoadingOneRecipe: false,
@@ -47,11 +48,14 @@ export const useRecipesStore = defineStore("recipes-store", {
           title: data.title,
           summary: data.summary,
           image: data.image,
+          readyInMinutes: data.readyInMinutes,
+          servings: data.servings,
+          instructions: data.instructions,
           dishType: data.dishTypes[0],
         };
         return this.recipe;
       } catch (error: any) {
-        console.error('Error fetching recipes: ', error.message);
+        console.error('Ошибка поулчения одного рецепта: ', error.message);
         throw error;
       } finally {
         setTimeout(() => {
@@ -81,13 +85,12 @@ export const useRecipesStore = defineStore("recipes-store", {
         this.searchingRecipes = data.results.map((recipeData: any) => ({
           id: recipeData.id,
           title: recipeData.title,
-          summary: '', // В вашем ответе от API нет поля 'summary', можете добавить его, если необходимо
           image: recipeData.image,
-          dishType: 'Unknown', // Ваше API-ответ не содержит информации о типе блюда, укажите нужное значение или оставьте 'Unknown'
         }));
+        this.totalResults = data.totalResults;
         return this.searchingRecipes;
       } catch (error: any) {
-        console.error('Error fetching search recipes: ', error.message);
+        console.error('Ошибка в поиске рецептов: ', error.message);
         throw error;
       } finally {
         setTimeout(() => {
@@ -95,6 +98,5 @@ export const useRecipesStore = defineStore("recipes-store", {
         }, 1000);
       }
     }
-
   },
 });

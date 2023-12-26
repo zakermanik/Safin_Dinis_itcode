@@ -18,7 +18,7 @@
                             <el-skeleton-item variant="text" style="width: 30%" />
                         </div>
                     </div>
-                    <el-skeleton-item variant="image" style="width: 300px; height: 150px;" />
+                    <el-skeleton-item variant="image" style="width: 300px; height: 140px;" />
                 </template>
             </el-skeleton>
         </div>
